@@ -2,6 +2,11 @@ import sqlite3
 import os
 from flask import current_app, g
 
+def get_db_connection():
+    conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
+    conn.row_factory = sqlite3.Row
+    return conn
+
 def get_db():
     """Get database connection"""
     if 'db' not in g:

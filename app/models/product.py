@@ -16,7 +16,13 @@ class Product:
     def get_all():
         """Get all products ordered by creation date"""
         db = get_db()
-        products = db.execute('SELECT * FROM products ORDER BY created_at DESC').fetchall()
+        products = db.execute('''
+        SELECT p.*, u.username as seller_name 
+        FROM products p 
+        JOIN users u ON p.seller_id = u.id 
+        ORDER BY p.created_at DESC
+         ''').fetchall()    
+        db.close()
         return [Product(**dict(product)) for product in products]
     
     @staticmethod

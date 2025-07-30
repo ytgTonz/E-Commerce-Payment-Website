@@ -3,41 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Commerce Store</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Marketplace - Buy & Sell Everything</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #06b6d4;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .products-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .product-card-body {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        .product-description {
+            color: #666;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .seller-info {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        .btn-buy {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .no-products i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #ccc;
+        }
+
+        .payment-modal .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-modal .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .user-dropdown {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-section p {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/">
-                <i class="fas fa-shopping-cart me-2"></i>
-                E-Commerce Store
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-store"></i> Marketplace
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/manage-products">
-                    <i class="fas fa-cog me-1"></i>
-                    Manage Products
-                </a>
-                <a class="nav-link" href="/add-product">
-                    <i class="fas fa-plus me-1"></i>
-                    Add Product
-                </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    
+                    {% if session.user_id %}
+                        {% if session.user_type == 'seller' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('add_product') }}">
+                                    <i class="fas fa-plus"></i> Add Product
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('manage_products') }}">
+                                    <i class="fas fa-cog"></i> Manage Products
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ session.username }}
+                                <span class="badge bg-{{ 'success' if session.user_type == 'seller' else 'primary' }} ms-1">
+                                    {{ session.user_type.title() }}
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu user-dropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">
+                                <i class="fas fa-user-plus"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container py-5">
+    <div class="container">
         <!-- Hero Section -->
         <div class="hero-section">
-            <h1 class="display-4 fw-bold mb-3">Welcome to Our Store</h1>
-            <p class="lead mb-4">Discover amazing products and shop with confidence using secure payments</p>
-            <a href="/add-product" class="btn btn-primary btn-lg">
-                <i class="fas fa-plus me-2"></i>
-                Add Your First Product
-            </a>
+            <h1><i class="fas fa-shopping-cart"></i> Welcome to Marketplace</h1>
+            <p>Discover amazing products from trusted sellers worldwide</p>
+            {% if not session.user_id %}
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-user-plus"></i> Join as Seller
+                </a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            {% endif %}
         </div>
 
         <!-- Flash Messages -->
@@ -52,81 +291,103 @@
             {% endif %}
         {% endwith %}
 
-        <!-- Products Grid -->
-        {% if products %}
-            <div class="row g-4">
-                {% for product in products %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="product-card">
-                            {% if product.image_path %}
-                                <img src="{{ url_for('static', filename=product.image_path) }}" 
-                                     alt="{{ product.name }}" 
-                                     class="product-image">
-                            {% else %}
-                                <div class="product-image d-flex align-items-center justify-content-center bg-light">
-                                    <i class="fas fa-image fa-3x text-muted"></i>
-                                </div>
-                            {% endif %}
-                            <div class="product-info">
-                                <h5 class="fw-bold mb-2">{{ product.name }}</h5>
-                                <p class="text-muted mb-3">{{ product.description or 'No description available' }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="price">R{{ "%.2f"|format(product.price) }}</span>
-                                    <button class="btn btn-primary" 
-                                            onclick="openPaymentModal({{ product.id }}, '{{ product.name }}', {{ product.price }})">
-                                        <i class="fas fa-credit-card me-1"></i>
-                                        Buy Now
-                                    </button>
+        <!-- Products Section -->
+        <div class="products-section">
+            <h2 class="mb-4">
+                <i class="fas fa-box"></i> Latest Products
+                <span class="badge bg-primary ms-2">{{ products|length }}</span>
+            </h2>
+            
+            {% if products %}
+                <div class="row">
+                    {% for product in products %}
+                        <div class="col-lg-4 col-md-6">
+                            <div class="product-card">
+                                {% if product.image_path %}
+                                    <img src="{{ url_for('static', filename=product.image_path) }}" 
+                                         alt="{{ product.name }}" class="product-image">
+                                {% else %}
+                                    <div class="product-image d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-image fa-3x text-white"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="product-card-body">
+                                    <h5 class="product-title">{{ product.name }}</h5>
+                                    <div class="product-price">R{{ "%.2f"|format(product.price) }}</div>
+                                    <p class="product-description">{{ product.description or 'No description available' }}</p>
+                                    <div class="seller-info">
+                                        <i class="fas fa-user"></i> Sold by: {{ product.seller_name }}
+                                    </div>
+                                    
+                                    {% if session.user_id and session.user_type == 'buyer' %}
+                                        <button class="btn-buy" data-bs-toggle="modal" data-bs-target="#paymentModal{{ product.id }}">
+                                            <i class="fas fa-credit-card"></i> Buy Now
+                                        </button>
+                                    {% elif not session.user_id %}
+                                        <a href="{{ url_for('login') }}" class="btn-buy">
+                                            <i class="fas fa-sign-in-alt"></i> Login to Buy
+                                        </a>
+                                    {% else %}
+                                        <div class="text-muted text-center">
+                                            <i class="fas fa-info-circle"></i> Sellers cannot buy products
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="no-products">
-                <i class="fas fa-box-open"></i>
-                <h3>No Products Available</h3>
-                <p class="text-muted">Start by adding your first product to the store.</p>
-                <a href="/add-product" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>
-                    Add Product
-                </a>
-            </div>
-        {% endif %}
-    </div>
 
-    <!-- Payment Modal -->
-    <div class="modal fade" id="paymentModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Complete Purchase</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <!-- Payment Modal -->
+                        {% if session.user_id and session.user_type == 'buyer' %}
+                            <div class="modal fade payment-modal" id="paymentModal{{ product.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                <i class="fas fa-credit-card"></i> Purchase {{ product.name }}
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="text-center mb-3">
+                                                <h4>Total: <span class="text-success">R{{ "%.2f"|format(product.price) }}</span></h4>
+                                            </div>
+                                            <form method="POST" action="{{ url_for('pay', product_id=product.id) }}">
+                                                <div class="mb-3">
+                                                    <label for="email{{ product.id }}" class="form-label">Email Address</label>
+                                                    <input type="email" class="form-control" id="email{{ product.id }}" 
+                                                           name="email" required placeholder="Enter your email">
+                                                </div>
+                                                <button type="submit" class="btn btn-success w-100">
+                                                    <i class="fas fa-credit-card"></i> Proceed to Payment
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-                <div class="modal-body">
-                    <div class="text-center mb-4">
-                        <h6 id="productName" class="fw-bold"></h6>
-                        <p class="text-muted">Price: R<span id="productPrice"></span></p>
-                    </div>
-                    <form id="paymentForm" method="POST">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-lock me-2"></i>
-                                Pay Securely with Paystack
-                            </button>
-                        </div>
-                    </form>
+            {% else %}
+                <div class="no-products">
+                    <i class="fas fa-box-open"></i>
+                    <h3>No Products Available</h3>
+                    <p>Be the first to list a product on our marketplace!</p>
+                    {% if session.user_id and session.user_type == 'seller' %}
+                        <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Your First Product
+                        </a>
+                    {% elif not session.user_id %}
+                        <a href="{{ url_for('register') }}" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Register as Seller
+                        </a>
+                    {% endif %}
                 </div>
-            </div>
+            {% endif %}
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 
