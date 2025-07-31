@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - Django Marketplace{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="bg-primary text-white p-4 rounded">
+            <h1 class="display-5 mb-0">Django Marketplace</h1>
+            <p class="lead">Discover amazing products from trusted sellers</p>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filters -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="search" 
+                               placeholder="Search products..." value="{{ search_query }}">
+                    </div>
+                    <div class="col-md-4">
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" 
+                                    {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Product Grid -->
+<div class="row">
+    {% if products %}
+        {% for product in products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" 
+                         alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                         style="height: 200px;">
+                        <i class="fas fa-image fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted small">
+                        {{ product.description|truncatewords:15 }}
+                    </p>
+                    <p class="card-text">
+                        <strong class="text-success">${{ product.price }}</strong>
+                        {% if product.category %}
+                            <span class="badge bg-secondary ms-2">{{ product.category.name }}</span>
+                        {% endif %}
+                    </p>
+                    <p class="card-text small text-muted">
+                        <i class="fas fa-user"></i> {{ product.seller.username }}
+                        {% if product.stock_quantity > 0 %}
+                            <span class="text-success ms-2">
+                                <i class="fas fa-check-circle"></i> In Stock ({{ product.stock_quantity }})
+                            </span>
+                        {% else %}
+                            <span class="text-danger ms-2">
+                                <i class="fas fa-times-circle"></i> Out of Stock
+                            </span>
+                        {% endif %}
+                    </p>
+                    
+                    <div class="mt-auto">
+                        <a href="{% url 'products:detail' product.pk %}" 
+                           class="btn btn-primary btn-sm">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                        {% if product.is_available %}
+                            {% if user.is_authenticated %}
+                                <button class="btn btn-success btn-sm add-to-cart-btn" 
+                                        data-product-id="{{ product.pk }}" 
+                                        data-product-name="{{ product.name }}">
+                                    <i class="fas fa-cart-plus"></i> Add to Cart
+                                </button>
+                            {% else %}
+                                <a href="{% url 'account_login' %}" 
+                                   class="btn btn-outline-success btn-sm">
+                                    Login to Buy
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                <h3>No Products Found</h3>
+                <p class="text-muted">
+                    {% if search_query or selected_category %}
+                        No products match your search criteria. Try different keywords or categories.
+                    {% else %}
+                        No products available yet. Check back later!
+                    {% endif %}
+                </p>
+                {% if search_query or selected_category %}
+                    <a href="{% url 'products:list' %}" class="btn btn-primary">
+                        <i class="fas fa-refresh"></i> Show All Products
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Pagination -->
+{% if products.has_other_pages %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="Product pagination">
+            <ul class="pagination justify-content-center">
+                {% if products.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">
+                        Page {{ products.number }} of {{ products.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if products.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.product-card {
+    transition: transform 0.2s;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Django Marketplace{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-light p-5 rounded mb-4">
+            <h1 class="display-4">Welcome to Django Marketplace!</h1>
+            <p class="lead">Your modernized e-commerce platform built with Django.</p>
+            <hr class="my-4">
+            <p>Successfully migrated from Flask with enhanced features:</p>
+            <ul class="list-unstyled">
+                <li><i class="fas fa-check text-success"></i> Professional Django architecture</li>
+                <li><i class="fas fa-check text-success"></i> Advanced user management</li>
+                <li><i class="fas fa-check text-success"></i> Shopping cart functionality</li>
+                <li><i class="fas fa-check text-success"></i> Order tracking system</li>
+                <li><i class="fas fa-check text-success"></i> Payment processing</li>
+                <li><i class="fas fa-check text-success"></i> Admin dashboard</li>
+            </ul>
+            <a class="btn btn-primary btn-lg" href="/admin/" role="button">
+                <i class="fas fa-cog"></i> Access Admin Panel
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">User Management</h5>
+                <p class="card-text">Advanced user roles with buyer/seller distinction</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-shopping-cart fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Shopping Cart</h5>
+                <p class="card-text">Full shopping cart with session management</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-credit-card fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Payment Processing</h5>
+                <p class="card-text">Integrated payment gateway with tracking</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
