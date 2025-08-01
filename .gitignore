@@ -1,2 +1,5 @@
 .env
 /venv
+context-summary.txt
+DEVELOPMENT_PHASES.md
+FRONTEND_FEATURES.md

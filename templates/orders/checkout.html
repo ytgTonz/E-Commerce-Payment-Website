@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - Django Marketplace{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                <i class="fas fa-shopping-cart mr-3 text-blue-600"></i>
+                Checkout
+            </h1>
+            <p class="text-gray-600 mt-2">Review your order and complete your purchase</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Shipping Information -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-blue-600 px-6 py-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center">
+                        <i class="fas fa-truck mr-2"></i>
+                        Shipping Information
+                    </h2>
+                </div>
+                
+                <form method="post" class="p-6">
+                    {% csrf_token %}
+                    
+                    <!-- Display form errors -->
+                    {% if shipping_form.non_field_errors %}
+                        <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-red-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    {% for error in shipping_form.non_field_errors %}
+                                        <p class="text-sm text-red-800">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Full Name -->
+                        <div>
+                            <label for="{{ shipping_form.full_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ shipping_form.full_name.label }}
+                            </label>
+                            {{ shipping_form.full_name }}
+                            {% if shipping_form.full_name.errors %}
+                                <div class="mt-1">
+                                    {% for error in shipping_form.full_name.errors %}
+                                        <p class="text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="{{ shipping_form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ shipping_form.email.label }}
+                            </label>
+                            {{ shipping_form.email }}
+                            {% if shipping_form.email.errors %}
+                                <div class="mt-1">
+                                    {% for error in shipping_form.email.errors %}
+                                        <p class="text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Phone -->
+                        <div>
+                            <label for="{{ shipping_form.phone.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ shipping_form.phone.label }}
+                            </label>
+                            {{ shipping_form.phone }}
+                            {% if shipping_form.phone.errors %}
+                                <div class="mt-1">
+                                    {% for error in shipping_form.phone.errors %}
+                                        <p class="text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Street Address -->
+                        <div>
+                            <label for="{{ shipping_form.address_line_1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ shipping_form.address_line_1.label }}
+                            </label>
+                            {{ shipping_form.address_line_1 }}
+                            {% if shipping_form.address_line_1.errors %}
+                                <div class="mt-1">
+                                    {% for error in shipping_form.address_line_1.errors %}
+                                        <p class="text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Apartment/Suite -->
+                        <div class="md:col-span-2">
+                            <label for="{{ shipping_form.address_line_2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ shipping_form.address_line_2.label }}
+                            </label>
+                            {{ shipping_form.address_line_2 }}
+                            {% if shipping_form.address_line_2.errors %}
+                                <div class="mt-1">
+                                    {% for error in shipping_form.address_line_2.errors %}
+                                        <p class="text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- City -->
+                        <div>
+                            <label for="{{ shipping_form.city.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ shipping_form.city.label }}
+                            </label>
+                            {{ shipping_form.city }}
+                            {% if shipping_form.city.errors %}
+                                <div class="mt-1">
+                                    {% for error in shipping_form.city.errors %}
+                                        <p class="text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- State -->
+                        <div>
+                            <label for="{{ shipping_form.state.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ shipping_form.state.label }}
+                            </label>
+                            {{ shipping_form.state }}
+                            {% if shipping_form.state.errors %}
+                                <div class="mt-1">
+                                    {% for error in shipping_form.state.errors %}
+                                        <p class="text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Postal Code -->
+                        <div>
+                            <label for="{{ shipping_form.postal_code.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ shipping_form.postal_code.label }}
+                            </label>
+                            {{ shipping_form.postal_code }}
+                            {% if shipping_form.postal_code.errors %}
+                                <div class="mt-1">
+                                    {% for error in shipping_form.postal_code.errors %}
+                                        <p class="text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-credit-card text-blue-600"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-blue-800">Payment Method</h3>
+                                <p class="text-sm text-blue-700">Secure payment via Paystack</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Place Order Button -->
+                    <div class="mt-8">
+                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors text-lg">
+                            <i class="fas fa-lock mr-2"></i>
+                            Place Order & Pay
+                        </button>
+                        <p class="text-xs text-gray-500 mt-2 text-center">
+                            Your payment information is secured with 256-bit SSL encryption
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b">
+                    <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-receipt mr-2"></i>
+                        Order Summary
+                    </h2>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Cart Items -->
+                    <div class="space-y-4 mb-6">
+                        {% for item in cart.items.all %}
+                            <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-16 h-16 object-cover rounded">
+                                {% else %}
+                                    <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                                        <i class="fas fa-image text-gray-400"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="flex-1">
+                                    <h3 class="text-sm font-medium text-gray-900">{{ item.product.name }}</h3>
+                                    <p class="text-sm text-gray-500">{{ item.product.seller.username }}</p>
+                                    <p class="text-sm text-gray-700">Qty: {{ item.quantity }}</p>
+                                </div>
+                                
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-gray-900">₦{{ item.total_price|floatformat:2 }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Order Totals -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>Subtotal ({{ cart.total_items }} items)</span>
+                                <span>₦{{ cart.total_price|floatformat:2 }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Shipping</span>
+                                <span class="text-green-600">Free</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Tax</span>
+                                <span>₦0.00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 mt-4 pt-4">
+                            <div class="flex justify-between text-lg font-bold">
+                                <span>Total</span>
+                                <span class="text-blue-600">₦{{ cart.total_price|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Badge -->
+                    <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-shield-alt text-green-600"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-green-800">
+                                    <strong>Secure Checkout</strong><br>
+                                    Your payment is protected by Paystack's industry-leading security
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Continue Shopping -->
+        <div class="mt-8 text-center">
+            <a href="{% url 'products:list' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

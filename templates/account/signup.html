@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - Django Marketplace{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <div class="mx-auto h-16 w-16 bg-green-600 rounded-full flex items-center justify-center">
+                <i class="fas fa-user-plus text-white text-2xl"></i>
+            </div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Create your account
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Or
+                <a href="{% url 'account_login' %}" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">
+                    sign in to your existing account
+                </a>
+            </p>
+        </div>
+
+        <form class="mt-8 space-y-6" method="post">
+            {% csrf_token %}
+            
+            <!-- Display form errors -->
+            {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            {% for error in form.non_field_errors %}
+                                <p class="text-sm text-red-800">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="space-y-4">
+                <!-- Username Field -->
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {{ form.username.label }}
+                    </label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        {{ form.username }}
+                        {% if form.username.help_text %}
+                            <p class="mt-1 text-xs text-gray-500">{{ form.username.help_text }}</p>
+                        {% endif %}
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="mt-1">
+                            {% for error in form.username.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Email Field -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {{ form.email.label }}
+                    </label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-400"></i>
+                        </div>
+                        {{ form.email }}
+                        {% if form.email.help_text %}
+                            <p class="mt-1 text-xs text-gray-500">{{ form.email.help_text }}</p>
+                        {% endif %}
+                    </div>
+                    {% if form.email.errors %}
+                        <div class="mt-1">
+                            {% for error in form.email.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Password1 Field -->
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {{ form.password1.label }}
+                    </label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        {{ form.password1 }}
+                        {% if form.password1.help_text %}
+                            <div class="mt-1 text-xs text-gray-500">
+                                {{ form.password1.help_text|safe }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if form.password1.errors %}
+                        <div class="mt-1">
+                            {% for error in form.password1.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Password2 Field -->
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {{ form.password2.label }}
+                    </label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        {{ form.password2 }}
+                        {% if form.password2.help_text %}
+                            <p class="mt-1 text-xs text-gray-500">{{ form.password2.help_text }}</p>
+                        {% endif %}
+                    </div>
+                    {% if form.password2.errors %}
+                        <div class="mt-1">
+                            {% for error in form.password2.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- User Type Selection -->
+                <div>
+                    <label for="{{ form.user_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-3">
+                        {{ form.user_type.label }}
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                        {% for choice in form.user_type %}
+                            <label class="relative border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 user-type-label" data-value="{{ choice.choice_value }}">
+                                {{ choice.tag }}
+                                <div class="flex items-center">
+                                    <div class="text-sm">
+                                        <div class="font-medium text-gray-900 flex items-center">
+                                            {% if choice.choice_value == 'buyer' %}
+                                                <i class="fas fa-shopping-cart text-blue-600 mr-2"></i>
+                                                Buyer
+                                            {% else %}
+                                                <i class="fas fa-store text-green-600 mr-2"></i>
+                                                Seller
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-gray-500 text-xs mt-1">
+                                            {% if choice.choice_value == 'buyer' %}
+                                                Shop and purchase products
+                                            {% else %}
+                                                Sell your own products
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="absolute top-3 right-3 h-4 w-4 opacity-0 choice-check">
+                                    <i class="fas fa-check-circle {% if choice.choice_value == 'buyer' %}text-blue-600{% else %}text-green-600{% endif %}"></i>
+                                </div>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.user_type.errors %}
+                        <div class="mt-1">
+                            {% for error in form.user_type.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="flex items-center">
+                <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <label for="terms" class="ml-2 block text-sm text-gray-700">
+                    I agree to the 
+                    <a href="#" class="text-blue-600 hover:text-blue-500">Terms and Conditions</a>
+                    and 
+                    <a href="#" class="text-blue-600 hover:text-blue-500">Privacy Policy</a>
+                </label>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i class="fas fa-user-plus text-green-500 group-hover:text-green-400"></i>
+                    </span>
+                    Create Account
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- Custom CSS for form styling -->
+<style>
+
+/* User type radio buttons */
+.user-type-label input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.user-type-label input[type="radio"]:checked ~ .choice-check {
+    opacity: 1;
+}
+
+.user-type-label:has(input[type="radio"]:checked) {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+.user-type-label[data-value="seller"]:has(input[type="radio"]:checked) {
+    border-color: #10b981;
+    background-color: #ecfdf5;
+}
+
+/* Custom styling for password help text */
+.helptext {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.helptext ul {
+    list-style-type: disc;
+    margin-left: 1rem;
+    margin-top: 0.25rem;
+}
+
+.helptext li {
+    margin-bottom: 0.125rem;
+}
+</style>
+
+<script>
+// Handle user type selection
+document.addEventListener('DOMContentLoaded', function() {
+    const userTypeRadios = document.querySelectorAll('input[name="user_type"]');
+    
+    userTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Remove selected state from all labels
+            document.querySelectorAll('.user-type-label').forEach(label => {
+                label.classList.remove('border-blue-500', 'bg-blue-50', 'border-green-500', 'bg-green-50');
+                label.classList.add('border-gray-300');
+                label.querySelector('.choice-check').style.opacity = '0';
+            });
+            
+            // Add selected state to chosen label
+            const parentLabel = this.closest('.user-type-label');
+            const value = parentLabel.dataset.value;
+            
+            if (value === 'buyer') {
+                parentLabel.classList.remove('border-gray-300');
+                parentLabel.classList.add('border-blue-500', 'bg-blue-50');
+            } else if (value === 'seller') {
+                parentLabel.classList.remove('border-gray-300');
+                parentLabel.classList.add('border-green-500', 'bg-green-50');
+            }
+            
+            parentLabel.querySelector('.choice-check').style.opacity = '1';
+        });
+    });
+    
+    // Set initial state for checked radio
+    const checkedRadio = document.querySelector('input[name="user_type"]:checked');
+    if (checkedRadio) {
+        checkedRadio.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock %}

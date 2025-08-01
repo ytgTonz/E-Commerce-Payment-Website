@@ -3,70 +3,72 @@
 {% block title %}Shopping Cart - Django Marketplace{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="fas fa-shopping-cart"></i> Your Shopping Cart</h2>
-            <a href="{% url 'products:list' %}" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left"></i> Continue Shopping
-            </a>
-        </div>
-    </div>
+<div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+        <i class="fas fa-shopping-cart mr-3"></i> Your Shopping Cart
+    </h1>
+    <a href="{% url 'products:list' %}" class="border border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition-colors">
+        <i class="fas fa-arrow-left mr-2"></i> Continue Shopping
+    </a>
 </div>
 
 {% if cart_items %}
-<div class="row">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Cart Items -->
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Cart Items ({{ cart.total_items }} item{{ cart.total_items|pluralize }})</h5>
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b">
+                <h2 class="text-lg font-semibold text-gray-900">
+                    Cart Items ({{ cart.total_items }} item{{ cart.total_items|pluralize }})
+                </h2>
             </div>
-            <div class="card-body p-0">
+            
+            <div class="divide-y divide-gray-200">
                 {% for item in cart_items %}
-                <div class="cart-item border-bottom p-3" data-item-id="{{ item.id }}">
-                    <div class="row align-items-center">
+                <div class="cart-item p-6 hover:bg-gray-50 transition-colors" data-item-id="{{ item.id }}">
+                    <div class="flex items-center space-x-4">
                         <!-- Product Image -->
-                        <div class="col-md-2 col-3">
-                            {% if item.product.image %}
-                                <img src="{{ item.product.image.url }}" class="img-fluid rounded" 
-                                     alt="{{ item.product.name }}" style="max-height: 80px; object-fit: cover;">
-                            {% else %}
-                                <div class="bg-light rounded d-flex align-items-center justify-content-center" 
-                                     style="height: 80px;">
-                                    <i class="fas fa-image text-muted"></i>
-                                </div>
-                            {% endif %}
+                        <div class="flex-shrink-0">
+                            <div class="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" class="w-full h-full object-cover" 
+                                         alt="{{ item.product.name }}">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <i class="fas fa-image text-gray-400"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                         
                         <!-- Product Info -->
-                        <div class="col-md-4 col-9">
-                            <h6 class="mb-1">
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-lg font-medium text-gray-900 truncate">
                                 <a href="{% url 'products:detail' item.product.pk %}" 
-                                   class="text-decoration-none">
+                                   class="hover:text-blue-600 transition-colors">
                                     {{ item.product.name }}
                                 </a>
-                            </h6>
-                            <p class="text-muted small mb-1">
+                            </h3>
+                            <p class="text-sm text-gray-500 mt-1">
                                 Seller: {{ item.product.seller.username }}
                             </p>
-                            <p class="text-success mb-0">
-                                <strong>${{ item.product.price }}</strong>
+                            <p class="text-lg font-bold text-green-600 mt-1">
+                                ${{ item.product.price }}
                             </p>
                         </div>
                         
                         <!-- Quantity Controls -->
-                        <div class="col-md-3 col-6">
-                            <form method="post" action="{% url 'cart:update_item' item.id %}" class="d-flex align-items-center">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-sm font-medium text-gray-700">Qty:</span>
+                            <form method="post" action="{% url 'cart:update_item' item.id %}" class="flex items-center">
                                 {% csrf_token %}
-                                <label for="quantity-{{ item.id }}" class="form-label me-2 mb-0">Qty:</label>
-                                <div class="input-group" style="max-width: 120px;">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm qty-decrease" 
+                                <div class="flex items-center border border-gray-300 rounded-lg">
+                                    <button type="button" class="qty-decrease px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-lg transition-colors" 
                                             data-target="quantity-{{ item.id }}">-</button>
                                     <input type="number" name="quantity" id="quantity-{{ item.id }}" 
-                                           class="form-control form-control-sm text-center" 
+                                           class="w-16 px-2 py-1 text-center border-0 focus:ring-0" 
                                            value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity }}">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm qty-increase" 
+                                    <button type="button" class="qty-increase px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-r-lg transition-colors" 
                                             data-target="quantity-{{ item.id }}" 
                                             data-max="{{ item.product.stock_quantity }}">+</button>
                                 </div>
@@ -74,13 +76,13 @@
                         </div>
                         
                         <!-- Item Total & Actions -->
-                        <div class="col-md-3 col-6 text-end">
-                            <div class="item-total mb-2">
-                                <strong class="text-success">${{ item.total_price }}</strong>
+                        <div class="text-right">
+                            <div class="text-xl font-bold text-green-600 mb-2">
+                                ${{ item.total_price }}
                             </div>
-                            <button type="button" class="btn btn-outline-danger btn-sm remove-item" 
+                            <button type="button" class="border border-red-500 text-red-600 hover:bg-red-50 px-3 py-1 rounded-lg text-sm font-medium transition-colors remove-item" 
                                     data-item-id="{{ item.id }}" data-product-name="{{ item.product.name }}">
-                                <i class="fas fa-trash"></i> Remove
+                                <i class="fas fa-trash mr-1"></i> Remove
                             </button>
                         </div>
                     </div>
@@ -90,54 +92,61 @@
         </div>
         
         <!-- Cart Actions -->
-        <div class="mt-3">
-            <a href="{% url 'cart:clear' %}" class="btn btn-outline-warning"
+        <div class="mt-6">
+            <a href="{% url 'cart:clear' %}" class="border border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-4 py-2 rounded-lg font-medium transition-colors"
                onclick="return confirm('Are you sure you want to clear your cart?')">
-                <i class="fas fa-trash-alt"></i> Clear Cart
+                <i class="fas fa-trash-alt mr-2"></i> Clear Cart
             </a>
         </div>
     </div>
     
     <!-- Cart Summary -->
-    <div class="col-lg-4">
-        <div class="card sticky-top" style="top: 100px;">
-            <div class="card-header">
-                <h5 class="mb-0">Order Summary</h5>
+    <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-md sticky top-8">
+            <div class="bg-gray-50 px-6 py-4 border-b rounded-t-lg">
+                <h2 class="text-lg font-semibold text-gray-900">Order Summary</h2>
             </div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Subtotal ({{ cart.total_items }} item{{ cart.total_items|pluralize }}):</span>
-                    <span id="cart-subtotal"><strong>${{ cart.total_price }}</strong></span>
-                </div>
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Shipping:</span>
-                    <span class="text-success">Free</span>
-                </div>
-                <hr>
-                <div class="d-flex justify-content-between mb-3">
-                    <strong>Total:</strong>
-                    <strong class="text-success" id="cart-total">${{ cart.total_price }}</strong>
+            
+            <div class="p-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Subtotal ({{ cart.total_items }} item{{ cart.total_items|pluralize }}):</span>
+                        <span id="cart-subtotal" class="font-semibold text-gray-900">${{ cart.total_price }}</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Shipping:</span>
+                        <span class="text-green-600 font-medium">Free</span>
+                    </div>
+                    
+                    <div class="border-t border-gray-200 pt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-semibold text-gray-900">Total:</span>
+                            <span class="text-2xl font-bold text-green-600" id="cart-total">${{ cart.total_price }}</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <button class="btn btn-success btn-lg w-100 mb-2">
-                    <i class="fas fa-credit-card"></i> Proceed to Checkout
-                </button>
+                <a href="{% url 'orders:checkout' %}" class="block w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg font-medium text-lg mt-6 transition-colors text-center">
+                    <i class="fas fa-credit-card mr-2"></i> Proceed to Checkout
+                </a>
                 
-                <div class="text-center">
-                    <small class="text-muted">
-                        <i class="fas fa-shield-alt"></i> Secure checkout powered by Paystack
-                    </small>
+                <div class="text-center mt-4">
+                    <p class="text-sm text-gray-500">
+                        <i class="fas fa-shield-alt mr-1"></i> Secure checkout powered by Paystack
+                    </p>
                 </div>
             </div>
         </div>
         
         <!-- Recommended Products -->
-        <div class="card mt-3">
-            <div class="card-header">
-                <h6 class="mb-0">You might also like</h6>
+        <div class="bg-white rounded-lg shadow-md mt-6">
+            <div class="bg-gray-50 px-6 py-4 border-b rounded-t-lg">
+                <h3 class="text-lg font-semibold text-gray-900">You might also like</h3>
             </div>
-            <div class="card-body">
-                <p class="text-muted small">Recommended products will appear here.</p>
+            
+            <div class="p-6">
+                <p class="text-gray-500 text-sm">Recommended products will appear here.</p>
             </div>
         </div>
     </div>
@@ -145,20 +154,16 @@
 
 {% else %}
 <!-- Empty Cart -->
-<div class="row">
-    <div class="col-12">
-        <div class="text-center py-5">
-            <i class="fas fa-shopping-cart fa-5x text-muted mb-4"></i>
-            <h3>Your cart is empty</h3>
-            <p class="text-muted mb-4">
-                Looks like you haven't added any items to your cart yet.<br>
-                Start shopping to fill it up!
-            </p>
-            <a href="{% url 'products:list' %}" class="btn btn-primary btn-lg">
-                <i class="fas fa-shopping-bag"></i> Start Shopping
-            </a>
-        </div>
-    </div>
+<div class="text-center py-16">
+    <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-6"></i>
+    <h2 class="text-2xl font-bold text-gray-700 mb-4">Your cart is empty</h2>
+    <p class="text-gray-500 mb-8 max-w-md mx-auto">
+        Looks like you haven't added any items to your cart yet.<br>
+        Start shopping to fill it up!
+    </p>
+    <a href="{% url 'products:list' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium text-lg transition-colors">
+        <i class="fas fa-shopping-bag mr-2"></i> Start Shopping
+    </a>
 </div>
 {% endif %}
 
@@ -228,23 +233,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-<style>
-.cart-item:hover {
-    background-color: #f8f9fa;
-}
-
-.sticky-top {
-    z-index: 1020;
-}
-
-.qty-decrease, .qty-increase {
-    border-radius: 0;
-}
-
-.input-group .form-control {
-    border-left: none;
-    border-right: none;
-}
-</style>
 {% endblock %}

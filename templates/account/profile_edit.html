@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - Django Marketplace{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+            <i class="fas fa-edit mr-3 text-blue-600"></i>
+            Edit Profile
+        </h1>
+        <p class="text-gray-600 mt-2">Update your account information</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-gray-50 px-6 py-4 border-b">
+            <h2 class="text-xl font-semibold text-gray-900">Personal Information</h2>
+        </div>
+        
+        <form method="post" class="p-6">
+            {% csrf_token %}
+            
+            <!-- Display form errors -->
+            {% if form.non_field_errors %}
+                <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            {% for error in form.non_field_errors %}
+                                <p class="text-sm text-red-800">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- First Name -->
+                <div>
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.first_name.label }}
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="mt-1">
+                            {% for error in form.first_name.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Last Name -->
+                <div>
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.last_name.label }}
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="mt-1">
+                            {% for error in form.last_name.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.email.label }}
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="mt-1">
+                            {% for error in form.email.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Phone -->
+                <div>
+                    <label for="{{ form.phone.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.phone.label }}
+                    </label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                        <div class="mt-1">
+                            {% for error in form.phone.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- User Type -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">
+                        {{ form.user_type.label }}
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                        {% for radio in form.user_type %}
+                            <label class="relative border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500">
+                                {{ radio.tag }}
+                                <div class="flex items-center">
+                                    <div class="text-sm">
+                                        <div class="font-medium text-gray-900 flex items-center">
+                                            {% if radio.choice_value == 'buyer' %}
+                                                <i class="fas fa-shopping-cart text-blue-600 mr-2"></i>
+                                                Buyer
+                                            {% else %}
+                                                <i class="fas fa-store text-green-600 mr-2"></i>
+                                                Seller
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-gray-500 text-xs mt-1">
+                                            {% if radio.choice_value == 'buyer' %}
+                                                Shop and purchase products
+                                            {% else %}
+                                                Sell your own products
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.user_type.errors %}
+                        <div class="mt-1">
+                            {% for error in form.user_type.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Address -->
+                <div class="md:col-span-2">
+                    <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.address.label }}
+                    </label>
+                    {{ form.address }}
+                    {% if form.address.errors %}
+                        <div class="mt-1">
+                            {% for error in form.address.errors %}
+                                <p class="text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                <button type="submit" class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                    <i class="fas fa-save mr-2"></i>
+                    Save Changes
+                </button>
+                
+                <a href="{% url 'accounts:profile' %}" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-times mr-2"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Handle user type selection styling
+document.addEventListener('DOMContentLoaded', function() {
+    const userTypeRadios = document.querySelectorAll('input[name="user_type"]');
+    
+    // Function to update label styling
+    function updateLabelStyling() {
+        userTypeRadios.forEach(radio => {
+            const label = radio.closest('label');
+            if (radio.checked) {
+                if (radio.value === 'buyer') {
+                    label.classList.remove('border-gray-300');
+                    label.classList.add('border-blue-500', 'bg-blue-50');
+                } else if (radio.value === 'seller') {
+                    label.classList.remove('border-gray-300');
+                    label.classList.add('border-green-500', 'bg-green-50');
+                }
+            } else {
+                label.classList.remove('border-blue-500', 'bg-blue-50', 'border-green-500', 'bg-green-50');
+                label.classList.add('border-gray-300');
+            }
+        });
+    }
+    
+    // Update styling on page load
+    updateLabelStyling();
+    
+    // Update styling when radio buttons change
+    userTypeRadios.forEach(radio => {
+        radio.addEventListener('change', updateLabelStyling);
+    });
+});
+</script>
+{% endblock %}
