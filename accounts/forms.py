@@ -1,6 +1,7 @@
 from django import forms
 from allauth.account.forms import SignupForm, LoginForm
 from .models import User
+from products.models import Product, Category
 
 
 class CustomSignupForm(SignupForm):
@@ -117,3 +118,53 @@ class UserProfileForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Make email required
         self.fields['email'].required = True
+
+
+class ProductForm(forms.ModelForm):
+    """
+    Form for sellers to add/edit products
+    """
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'price', 'category', 'stock_quantity', 'image']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': 'Enter product name'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': 'Describe your product...',
+                'rows': 4
+            }),
+            'price': forms.NumberInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': '0.00',
+                'step': '0.01',
+                'min': '0'
+            }),
+            'category': forms.Select(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+            }),
+            'stock_quantity': forms.NumberInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': '0',
+                'min': '0'
+            }),
+            'image': forms.ClearableFileInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'accept': 'image/*'
+            })
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Make all fields required except image
+        for field_name, field in self.fields.items():
+            if field_name != 'image':
+                field.required = True
+        
+        # Add help text
+        self.fields['price'].help_text = 'Price in South African Rand (ZAR)'
+        self.fields['stock_quantity'].help_text = 'Number of items available'
+        self.fields['image'].help_text = 'Upload a product image (optional)'

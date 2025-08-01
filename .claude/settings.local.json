@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(python manage.py:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(USE_SQLITE=true python manage.py check)",
+      "Bash(USE_SQLITE=true python manage.py runserver --noreload)"
     ],
     "deny": []
   }
