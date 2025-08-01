@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from re import DEBUG
 from dotenv import load_dotenv
+import dj_database_url
 
 # Load environment variables
 load_dotenv()
@@ -28,8 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-^*zoqn&yi*s-l=j)inpnp#zv!pjd42sle8ba!wm!d5w5in04@n')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+DEBUG = os.getenv('DEBUG', 'False'),.lower() == 'true'
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 
@@ -69,6 +70,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'marketplace.urls'
@@ -95,16 +98,24 @@ WSGI_APPLICATION = 'marketplace.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'marketplace_db'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'password'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
-    }
-}
+if 'DATABASE_URL' in os.environ:
+      DATABASES = {
+          'default':
+  dj_database_url.parse(os.environ.get('DATABASE_URL'))
+      }
+else:
+      DATABASES = {
+          'default': {
+              'ENGINE': 'django.db.backends.postgresql',
+              'NAME': os.getenv('DB_NAME',
+  'marketplace_db'),
+              'USER': os.getenv('DB_USER', 'postgres'),
+              'PASSWORD': os.getenv('DB_PASSWORD',
+  'password'),
+              'HOST': os.getenv('DB_HOST', 'localhost'),
+              'PORT': os.getenv('DB_PORT', '5432'),
+          }
+      }
 
 # Fallback to SQLite for development if PostgreSQL not available
 if os.getenv('USE_SQLITE', 'False').lower() == 'true':
@@ -155,6 +166,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+ # Static files configuration for production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (user uploads)
 MEDIA_URL = '/media/'
