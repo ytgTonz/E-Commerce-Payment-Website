@@ -73,7 +73,8 @@ def checkout(request):
             # Initialize Paystack payment
             paystack_data = {
                 'email': request.user.email,
-                'amount': int(order.total_amount * 100),  # Paystack expects amount in kobo
+                'amount': int(order.total_amount * 100),  # Paystack expects amount in cents
+                'currency': settings.PAYSTACK_CURRENCY,  # ZAR for South African Rand
                 'reference': payment_reference,
                 'callback_url': request.build_absolute_uri(reverse('orders:checkout_success')),
                 'metadata': {

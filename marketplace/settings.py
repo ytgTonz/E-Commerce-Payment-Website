@@ -224,9 +224,10 @@ ACCOUNT_FORMS = {
     'login': 'accounts.forms.CustomLoginForm',
 }
 
-# Paystack settings
+# Paystack settings for South Africa (ZAR)
 PAYSTACK_PUBLIC_KEY = os.getenv('PAYSTACK_PUBLIC_KEY', 'pk_test_0462a4488b86d64ff1db027d0905c85fb58e4396')
 PAYSTACK_SECRET_KEY = os.getenv('PAYSTACK_SECRET_KEY', 'sk_test_a2c5d7cacf97b2bf4007a7b3e2871897198c21bf')
+PAYSTACK_CURRENCY = 'ZAR'  # South African Rand
 
 # File upload settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 16 * 1024 * 1024  # 16MB

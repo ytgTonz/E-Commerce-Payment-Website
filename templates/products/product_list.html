@@ -65,7 +65,7 @@
                 
                 <!-- Price and Category -->
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-2xl font-bold text-green-600">${{ product.price }}</span>
+                    <span class="text-2xl font-bold text-green-600">R{{ product.price }}</span>
                     {% if product.category %}
                         <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">{{ product.category.name }}</span>
                     {% endif %}
